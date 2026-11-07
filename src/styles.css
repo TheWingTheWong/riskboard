@@ -31,6 +31,7 @@
   --own: #d4a862;
   --control: #8db4ea;
   --control-dim: rgba(141, 180, 234, 0.16);
+  --hedge: #48b28c;
 
   --font-ui: 'Archivo Variable', 'Archivo', system-ui, sans-serif;
   --font-numeral: 'Bodoni Moda Variable', 'Bodoni 72', 'Didot', Georgia, serif;
@@ -77,7 +78,7 @@ body {
 }
 
 ::selection {
-  background: var(--own);
+  background: var(--control);
   color: var(--z0);
 }
 
@@ -141,7 +142,7 @@ p {
   width: 30px;
   height: 30px;
   fill: none;
-  stroke: var(--own);
+  stroke: var(--z8);
   stroke-width: 0.6;
 }
 
@@ -447,8 +448,9 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 input[type='range']::-moz-range-thumb {
-  width: 9px;
-  height: 9px;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--z0);
   border: 2px solid var(--control);
@@ -555,7 +557,9 @@ input[type='range']::-moz-range-thumb {
 }
 
 .total.is-off .total-figure {
-  color: var(--own);
+  color: var(--z10);
+  text-decoration: underline double;
+  text-underline-offset: 3px;
 }
 
 .add {
@@ -938,7 +942,7 @@ input[type='range']::-moz-range-thumb {
 .legend-ramp {
   width: 160px;
   height: 8px;
-  background: linear-gradient(to right, rgb(72, 178, 140), rgb(19, 33, 28) 50%, rgb(236, 226, 196));
+  background: linear-gradient(to right, var(--hedge), rgb(19, 33, 28) 50%, var(--z10));
 }
 
 /* Labels drawn over data get a ground-coloured halo so they stay legible. */
@@ -1043,8 +1047,8 @@ input[type='range']::-moz-range-thumb {
 
 .key-hedge,
 .riskrow-share.is-hedge {
-  background: repeating-linear-gradient(-45deg, rgb(72, 178, 140) 0 1px, transparent 1px 3px);
-  outline: 1px solid rgb(72, 178, 140);
+  background: repeating-linear-gradient(-45deg, var(--hedge) 0 1px, transparent 1px 3px);
+  outline: 1px solid var(--hedge);
   outline-offset: -1px;
 }
 

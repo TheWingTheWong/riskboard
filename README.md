@@ -109,7 +109,7 @@ To regenerate: `npm run generate:data`. Pass a different seed to get a different
 
 ## Design
 
-The visual direction is security printing: the intaglio green of banknote ink for the ground and every neutral (one stepped ramp), Didone numerals for money amounts, and fine-line hatching for anything past a loss threshold. Colours have fixed jobs: vermilion means loss, bronze means your portfolio, blue means a control you can operate. The guilloche rule under the masthead is drawn from the portfolio's volatility, so it gets busier as risk rises.
+The visual direction is security printing: the intaglio green of banknote ink for the ground and every neutral (one stepped ramp), Didone numerals for money amounts, and fine-line hatching for anything past a loss threshold. Colours have fixed jobs: vermilion means loss, bronze means your portfolio, blue means a control you can operate. The guilloche rule under the masthead is drawn from the portfolio's volatility, so it gets busier as risk rises. Risk shares are drawn as engraved ruling, and the summary line sits between two microprint rules. [`DESIGN.md`](DESIGN.md) records the tokens and rules.
 
 ## Limitations
 

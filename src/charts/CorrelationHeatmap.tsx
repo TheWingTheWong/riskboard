@@ -10,8 +10,9 @@ interface Props {
 }
 
 const BASE = [19, 33, 28]; // --z2
-const PAPER = [236, 226, 196];
-const GREEN = [72, 178, 140];
+const PAPER = [237, 231, 215]; // --z10
+
+const GREEN = [72, 178, 140]; // --hedge
 
 function mix(a: number[], b: number[], t: number): string {
   return `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(', ')})`;
