@@ -5,3 +5,6 @@ coverage
 .DS_Store
 .vite
 *.tsbuildinfo
+
+# design-tool working files (screenshots, briefs)
+.impeccable/
