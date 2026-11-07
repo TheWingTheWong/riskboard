@@ -1,5 +1,7 @@
 # riskboard
 
+[![ci](https://github.com/TheWingTheWong/riskboard/actions/workflows/ci.yml/badge.svg)](https://github.com/TheWingTheWong/riskboard/actions/workflows/ci.yml)
+
 A portfolio risk dashboard that runs entirely in the browser. Edit a portfolio's tickers and weights and riskboard recomputes Value at Risk three ways (historical, parametric, Monte Carlo), expected shortfall, volatility, beta, the correlation matrix, each holding's share of risk and the mean-variance efficient frontier.
 
 ![riskboard showing the Balanced preset at 95% confidence](docs/screenshot.png)
