@@ -1,9 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-
-function App() {
-  return <h1>riskboard</h1>;
-}
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource-variable/bodoni-moda/index.css';
+import './styles.css';
+import { App } from './App';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
