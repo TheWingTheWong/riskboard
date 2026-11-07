@@ -67,7 +67,8 @@ const FACTOR_VOL: Record<Factor, number> = {
   gold: 0.009,
 };
 
-const round6 = (x: number) => Math.round(x * 1e6) / 1e6;
+// `|| 0` folds -0 into 0 so generated data matches its JSON round-trip.
+const round6 = (x: number) => Math.round(x * 1e6) / 1e6 || 0;
 
 /** Weekday ISO dates ending at `end` (inclusive), ascending. */
 export function businessDays(end: string, count: number): string[] {
