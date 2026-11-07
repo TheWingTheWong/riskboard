@@ -14,6 +14,27 @@ interface Props {
 const HEIGHT = 340;
 const M = { top: 16, right: 18, bottom: 38, left: 48 };
 
+/**
+ * Nudges labels apart vertically: labels whose estimated boxes overlap
+ * horizontally are pushed down until they are `gap` px apart.
+ */
+export function placeLabels(items: { x: number; y: number; width: number }[], gap = 12): number[] {
+  const order = items.map((_, i) => i).sort((a, b) => items[a].y - items[b].y);
+  const placed: { x: number; y: number; width: number }[] = [];
+  const out = new Array<number>(items.length);
+  for (const i of order) {
+    let y = items[i].y;
+    for (let guard = 0; guard < items.length; guard++) {
+      const clash = placed.find((p) => Math.abs(p.y - y) < gap && p.x < items[i].x + items[i].width && items[i].x < p.x + p.width);
+      if (!clash) break;
+      y = clash.y + gap;
+    }
+    placed.push({ ...items[i], y });
+    out[i] = y;
+  }
+  return out;
+}
+
 /** Green ramp for the random-portfolio cloud, by return/volatility ratio. */
 function cloudFill(t: number): string {
   const k = Math.max(0, Math.min(1, t));
@@ -39,6 +60,10 @@ export function FrontierChart({ frontier, tickers, weights }: Props) {
   }, [cloud, curve, assets, minVariance, current, width]);
 
   const xTicks = x.ticks(Math.max(3, Math.floor(width / 100)));
+  const radii = assets.map((_, i) => 2.5 + Math.sqrt(weights[i]) * 9);
+  const labelY = placeLabels(
+    assets.map((a, i) => ({ x: x(a.vol) + radii[i] + 3, y: y(a.ret), width: tickers[i].length * 7.5 })),
+  );
   const yTicks = y.ticks(5);
   const cx = x(current.vol);
   const cy = y(current.ret);
@@ -70,14 +95,19 @@ export function FrontierChart({ frontier, tickers, weights }: Props) {
             <circle key={i} cx={x(p.vol)} cy={y(p.ret)} r={1.6} fill={cloudFill((p.sharpe - sharpeLo) / (sharpeHi - sharpeLo || 1))} />
           ))}
         </g>
-        <path d={curvePath} className="frontier-curve" />
+        <defs>
+          <clipPath id="frontier-plot">
+            <rect x={M.left} y={M.top} width={width - M.left - M.right} height={HEIGHT - M.top - M.bottom} />
+          </clipPath>
+        </defs>
+        <path d={curvePath} className="frontier-curve" clipPath="url(#frontier-plot)" />
 
         {assets.map((a, i) => {
-          const r = 2.5 + Math.sqrt(weights[i]) * 9;
+          const r = radii[i];
           return (
             <g key={tickers[i]} className="asset-dot" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
               <circle cx={x(a.vol)} cy={y(a.ret)} r={r} />
-              <text className="tick asset-label" x={x(a.vol) + r + 3} y={y(a.ret)} dy="0.32em">{tickers[i]}</text>
+              <text className="tick asset-label" x={x(a.vol) + r + 3} y={labelY[i]} dy="0.32em">{tickers[i]}</text>
             </g>
           );
         })}
@@ -92,11 +122,19 @@ export function FrontierChart({ frontier, tickers, weights }: Props) {
           <line x1={M.left} x2={cx - 9} y1={cy} y2={cy} />
           <circle cx={cx} cy={cy} r={7} />
           <circle cx={cx} cy={cy} r={2} className="current-core" />
-          <text x={labelLeft ? cx - 12 : cx + 12} y={cy - 10} textAnchor={labelLeft ? 'end' : 'start'} className="current-label">
+          <rect
+            className="current-plate"
+            x={labelLeft ? cx - 14 - 128 : cx + 10}
+            y={cy - 24}
+            width={128}
+            height={34}
+            rx={2}
+          />
+          <text x={labelLeft ? cx - 20 : cx + 16} y={cy - 10} textAnchor={labelLeft ? 'end' : 'start'} className="current-label">
             Your portfolio
           </text>
-          <text x={labelLeft ? cx - 12 : cx + 12} y={cy + 4} textAnchor={labelLeft ? 'end' : 'start'} className="current-figures">
-            {pct(current.ret, 1)} / {pct(current.vol, 1)}
+          <text x={labelLeft ? cx - 20 : cx + 16} y={cy + 4} textAnchor={labelLeft ? 'end' : 'start'} className="current-figures">
+            {pct(current.ret, 1)} return · {pct(current.vol, 1)} vol
           </text>
         </g>
       </svg>

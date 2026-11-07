@@ -123,7 +123,7 @@ export function App() {
                   </p>
                 </header>
                 <p className="panel-note">
-                  Euler decomposition of portfolio volatility: shares add up to 100%. A ratio above 1.00× means the holding carries more risk than
+                  Euler decomposition of portfolio volatility: shares add up to 100%. Ratios above 1.25× are double-underlined: the holding carries more risk than
                   its weight suggests.
                 </p>
                 <div className="riskbars-head" aria-hidden="true">

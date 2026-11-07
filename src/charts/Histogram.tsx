@@ -68,7 +68,7 @@ export function Histogram({ returns, mean, sd, markers, tailCutoff }: Props) {
         aria-label={`Histogram of ${returns.length} daily portfolio returns. ${tailDays} days fell beyond the historical VaR of ${pct(-tailCutoff)}.`}
         onMouseLeave={() => setHover(null)}
       >
-        <HatchDefs id="tail-hatch" color="var(--loss)" spacing={3} weight={1} />
+        <HatchDefs id="tail-hatch" color="var(--loss)" spacing={3.5} weight={1.2} />
         {yTicks.map((t) => (
           <g key={t}>
             <line className="grid" x1={M.left} x2={width - M.right} y1={y(t)} y2={y(t)} />
@@ -89,7 +89,6 @@ export function Histogram({ returns, mean, sd, markers, tailCutoff }: Props) {
                   width={bw}
                   height={y(0) - y(b.count)}
                   className={inTail ? 'bin bin-tail' : 'bin'}
-                  fill={inTail ? 'url(#tail-hatch)' : undefined}
                   data-active={hover === i || undefined}
                 />
               )}
