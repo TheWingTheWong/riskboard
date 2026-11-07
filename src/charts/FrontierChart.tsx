@@ -67,7 +67,31 @@ export function FrontierChart({ frontier, tickers, weights }: Props) {
   const yTicks = y.ticks(5);
   const cx = x(current.vol);
   const cy = y(current.ret);
-  const labelLeft = cx > width - 170;
+
+  // Place the current-portfolio plate in whichever corner around the marker
+  // covers the fewest asset dots and labels (and stays inside the plot).
+  const PLATE_W = 128;
+  const PLATE_H = 34;
+  const obstacles = assets.map((a, i) => {
+    const ax = x(a.vol);
+    return { x0: ax - radii[i], x1: ax + radii[i] + 3 + tickers[i].length * 7.5, y0: Math.min(y(a.ret), labelY[i]) - 8, y1: Math.max(y(a.ret), labelY[i]) + 8 };
+  });
+  const corners = [-PLATE_H + 10, 12, -PLATE_H - 18, 40, -PLATE_H - 46]
+    .flatMap((dy) => [
+      { dx: 10, dy },
+      { dx: -14 - PLATE_W, dy },
+    ])
+    .map((c, order) => {
+      const box = { x0: cx + c.dx, x1: cx + c.dx + PLATE_W, y0: cy + c.dy, y1: cy + c.dy + PLATE_H };
+      const outside = box.x0 < M.left || box.x1 > width - M.right || box.y0 < M.top || box.y1 > HEIGHT - M.bottom;
+      // Overlapped area with dots/labels, plus a small preference for corners close to the marker.
+      const overlap = obstacles.reduce(
+        (sum, o) => sum + Math.max(0, Math.min(o.x1, box.x1) - Math.max(o.x0, box.x0)) * Math.max(0, Math.min(o.y1, box.y1) - Math.max(o.y0, box.y0)),
+        0,
+      );
+      return { ...box, score: overlap + order * 2 + (outside ? 1e6 : 0) };
+    });
+  const plate = corners.reduce((best, c) => (c.score < best.score ? c : best));
 
   return (
     <div className="chart" ref={ref}>
@@ -122,18 +146,11 @@ export function FrontierChart({ frontier, tickers, weights }: Props) {
           <line x1={M.left} x2={cx - 9} y1={cy} y2={cy} />
           <circle cx={cx} cy={cy} r={7} />
           <circle cx={cx} cy={cy} r={2} className="current-core" />
-          <rect
-            className="current-plate"
-            x={labelLeft ? cx - 14 - 128 : cx + 10}
-            y={cy - 24}
-            width={128}
-            height={34}
-            rx={2}
-          />
-          <text x={labelLeft ? cx - 20 : cx + 16} y={cy - 10} textAnchor={labelLeft ? 'end' : 'start'} className="current-label">
+          <rect className="current-plate" x={plate.x0} y={plate.y0} width={PLATE_W} height={PLATE_H} rx={2} />
+          <text x={plate.x0 + 6} y={plate.y0 + 14} className="current-label">
             Your portfolio
           </text>
-          <text x={labelLeft ? cx - 20 : cx + 16} y={cy + 4} textAnchor={labelLeft ? 'end' : 'start'} className="current-figures">
+          <text x={plate.x0 + 6} y={plate.y0 + 28} className="current-figures">
             {pct(current.ret, 1)} return · {pct(current.vol, 1)} vol
           </text>
         </g>
